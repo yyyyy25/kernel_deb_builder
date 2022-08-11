@@ -22,7 +22,7 @@ cd linux-"$VERSION" || exit
 cp ../config .config
 
 # disable DEBUG_INFO to speedup build
-scripts/config --disable DEBUG_INFO
+# scripts/config --disable DEBUG_INFO
 
 # apply patches
 # shellcheck source=src/util.sh
@@ -33,6 +33,6 @@ CPU_CORES=$(($(grep -c processor < /proc/cpuinfo)*2))
 make deb-pkg -j"$CPU_CORES"
 
 # move deb packages to artifact dir
-cd ..
-mkdir "artifact"
-mv ./*.deb artifact/
+# cd ..
+# mkdir "artifact"
+# mv ./*.deb artifact/
