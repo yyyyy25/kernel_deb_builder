@@ -24,12 +24,13 @@ jobs:
 
       - name: start docker and build 
         run: |
+          chmod +x ${{ github.workspace }}/docker-entrypoint.sh 
           docker run --rm --env VERSION=${{ matrix.version }} \
             -v ${{ github.workspace }}/linux-${{ matrix.version }}/:/linux-${{ matrix.version }}/ \
             -v ${{ github.workspace }}/config-${{ matrix.version }}:/config-${{ matrix.version }} \
             -v ${{ github.workspace }}/docker-entrypoint.sh:/docker-entrypoint.sh \
             -v ${{ github.workspace }}/patch.d/:/patch.d/ \
-            gcc:bullseye "bash /docker-entrypoint.sh 2>&1"
+            gcc:bullseye "/docker-entrypoint.sh"
 
       - name: Checkout
         uses: actions/checkout@v2
