@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ["5.19.1"]
+        version: ["5.19.0", "5.19.1"]
     name: Build kernel
     runs-on: ubuntu-22.04
     steps:

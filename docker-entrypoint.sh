@@ -23,8 +23,14 @@ apt build-dep -y linux
 # change dir to workplace
 cd "/linux-${VERSION}" || exit
 
+if [ "${VERSION: -2}" = ".0" ]; then
+    VERSION_MAJOR="${VERSION:0: -2}"
+else
+    VERSION_MAJOR="${VERSION}"
+fi
+
 # download kernel source
-wget http://www.kernel.org/pub/linux/kernel/v${VERSION: 0: 1}.x/linux-"$VERSION".tar.xz
+wget http://www.kernel.org/pub/linux/kernel/v${VERSION: 0: 1}.x/linux-"${VERSION_MAJOR}".tar.xz
 tar -xf linux-"$VERSION".tar.xz
 cd linux-"$VERSION" || exit
 
