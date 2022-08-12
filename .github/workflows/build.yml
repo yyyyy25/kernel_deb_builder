@@ -25,7 +25,7 @@ jobs:
       - name: start docker and build 
         run: |
           docker run --rm --env VERSION=${{ matrix.version }} \
-            -v ${{ github.workspace }}/linux-${{ matrix.version }}:/linux-${{ matrix.version }} \
+            -v ${{ github.workspace }}/linux-${{ matrix.version }}/:/linux-${{ matrix.version }}/ \
             -v ${{ github.workspace }}/config-${{ matrix.version }}:/config-${{ matrix.version }} \
             -v ${{ github.workspace }}/docker-entrypoint.sh:/docker-entrypoint.sh \
             -v ${{ github.workspace }}/patch.d/:/patch.d/ \
