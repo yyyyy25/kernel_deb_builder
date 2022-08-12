@@ -22,6 +22,9 @@ jobs:
           remove-dotnet: 'true'
           remove-android: 'true'
 
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: start docker and build 
         run: |
           ls -al ${{ github.workspace }} 
@@ -33,14 +36,11 @@ jobs:
             -v ${{ github.workspace }}/patch.d/:/patch.d/ \
             gcc:bullseye "/docker-entrypoint.sh"
 
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Build
         run: bash build_action.sh
 
       - name: Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: linux-${{ matrix.version }}
           path: ${{ github.workspace }}/linux-${{ matrix.version }}/
