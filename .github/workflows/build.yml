@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ["5.19.0"]
+        version: ["5.19.1"]
     name: Build kernel
     runs-on: ubuntu-22.04
     steps:
@@ -29,7 +29,7 @@ jobs:
         run: |
           ls -al ${{ github.workspace }} 
           chmod +x ${{ github.workspace }}/docker-entrypoint.sh 
-          docker run --rm --env VERSION=${{ matrix.version }} \
+          docker run --rm --user root --env VERSION=${{ matrix.version }} \
             -v ${{ github.workspace }}/linux-${{ matrix.version }}/:/linux-${{ matrix.version }}/ \
             -v ${{ github.workspace }}/config-${{ matrix.version }}:/config-${{ matrix.version }} \
             -v ${{ github.workspace }}/docker-entrypoint.sh:/docker-entrypoint.sh \
