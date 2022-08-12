@@ -7,16 +7,13 @@ on:
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["5.19.0"]
     name: Build kernel
     runs-on: ubuntu-22.04
-    container:
-      image: gcc:latest
-      options: --user root
     steps:
-      - name: Install sudo
-        run: |
-          apt-get update
-          apt install -y sudo
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -24,6 +21,16 @@ jobs:
           swap-size-mb: 512
           remove-dotnet: 'true'
           remove-android: 'true'
+
+      - name: start docker and build 
+        run: |
+          docker run --rm --env VERSION=${{ matrix.version }} \
+            -v ${{ github.workspace }}/linux-${{ matrix.version }}:/linux-${{ matrix.version }} \
+            -v ${{ github.workspace }}/config-${{ matrix.version }}:/config-${{ matrix.version }} \
+            -v ${{ github.workspace }}/entrypoint.sh:/entrypoint.sh \
+            -v ${{ github.workspace }}/patch.d/:/patch.d/ \
+            gcc:bullseye bash /entrypoint.sh
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -33,5 +40,5 @@ jobs:
       - name: Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: artifact
-          path: ${{ github.workspace }}/artifact/
+          name: linux-${{ matrix.version }}
+          path: ${{ github.workspace }}/linux-${{ matrix.version }}/
