@@ -17,7 +17,7 @@ EOF
 
 # install dep
 apt update
-apt install -y wget
+apt install -y wget zstd
 apt build-dep -y linux
 
 # change dir to workplace
