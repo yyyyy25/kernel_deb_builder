@@ -16,9 +16,9 @@ jobs:
     steps:
       - name: Update and Upgrade
         run: |
-          apt-get update
-          apt-get upgrade -y
-          apt install -y zstd
+          sudo apt-get update
+          sudo apt-get upgrade -y
+          sudo apt install -y zstd
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -44,7 +44,7 @@ jobs:
       - name: prepare artifact
         run: |
           cd ${{ github.workspace }}
-          tar -l zstd -cvf linux-${{ matrix.version }}.tar.zst linux-${{ matrix.version }}
+          sudo tar -l zstd -cvf linux-${{ matrix.version }}.tar.zst linux-${{ matrix.version }}
 
       - name: Artifact
         uses: actions/upload-artifact@v3
