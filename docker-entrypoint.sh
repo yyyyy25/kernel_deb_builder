@@ -1,7 +1,19 @@
 #!/usr/bin/env bash
 
 # add deb-src to sources.list
-sed -i "/deb-src/s/# //g" /etc/apt/sources.list
+# sed -i "/deb-src/s/# //g" /etc/apt/sources.list
+cat <<EOF > /etc/apt/sources.list
+deb https://deb.debian.org/debian/ bullseye main contrib non-free
+deb-src https://deb.debian.org/debian/ bullseye main contrib non-free
+deb https://deb.debian.org/debian/ bullseye-updates main contrib non-free
+deb-src https://deb.debian.org/debian/ bullseye-updates main contrib non-free
+
+deb https://deb.debian.org/debian/ bullseye-backports main contrib non-free
+deb-src https://deb.debian.org/debian/ bullseye-backports main contrib non-free
+
+deb https://deb.debian.org/debian-security bullseye-security main contrib non-free
+deb-src https://deb.debian.org/debian-security bullseye-security main contrib non-free
+EOF
 
 # install dep
 apt update
@@ -12,7 +24,7 @@ apt build-dep -y linux
 cd "/linux-${VERSION}" || exit
 
 # download kernel source
-wget http://www.kernel.org/pub/linux/kernel/v5.x/linux-"$VERSION".tar.xz
+wget http://www.kernel.org/pub/linux/kernel/v${$VERSION: 0: 1}.x/linux-"$VERSION".tar.xz
 tar -xf linux-"$VERSION".tar.xz
 cd linux-"$VERSION" || exit
 
