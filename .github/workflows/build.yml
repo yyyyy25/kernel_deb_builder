@@ -27,9 +27,9 @@ jobs:
           docker run --rm --env VERSION=${{ matrix.version }} \
             -v ${{ github.workspace }}/linux-${{ matrix.version }}:/linux-${{ matrix.version }} \
             -v ${{ github.workspace }}/config-${{ matrix.version }}:/config-${{ matrix.version }} \
-            -v ${{ github.workspace }}/entrypoint.sh:/entrypoint.sh \
+            -v ${{ github.workspace }}/docker-entrypoint.sh:/docker-entrypoint.sh \
             -v ${{ github.workspace }}/patch.d/:/patch.d/ \
-            gcc:bullseye bash /entrypoint.sh
+            gcc:bullseye bash /docker-entrypoint.sh
 
       - name: Checkout
         uses: actions/checkout@v2
