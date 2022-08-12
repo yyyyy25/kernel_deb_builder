@@ -32,6 +32,11 @@ fi
 # download kernel source
 wget http://www.kernel.org/pub/linux/kernel/v${VERSION: 0: 1}.x/linux-"${VERSION_MAJOR}".tar.xz -O linux-"${VERSION}".tar.xz
 tar -xf linux-"${VERSION}".tar.xz
+
+if [ "${VERSION}" != "${VERSION_MAJOR}" ]; then
+    mv linux-"${VERSION_MAJOR}" linux-"${VERSION}"
+fi
+
 cd linux-"${VERSION}" || exit
 
 # copy config file
