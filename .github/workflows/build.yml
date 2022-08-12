@@ -14,6 +14,11 @@ jobs:
     name: Build kernel
     runs-on: ubuntu-22.04
     steps:
+      - name: Update and Upgrade
+        run: |
+          apt-get update
+          apt-get upgrade -y
+          apt install -y zstd
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -36,8 +41,13 @@ jobs:
             -v ${{ github.workspace }}/patch.d/:/patch.d/ \
             gcc:bullseye "/docker-entrypoint.sh"
 
+      - name: prepare artifact
+        run: |
+          cd ${{ github.workspace }}
+          tar -l zstd -cvf linux-${{ matrix.version }}.tar.zst linux-${{ matrix.version }}
+
       - name: Artifact
         uses: actions/upload-artifact@v3
         with:
           name: linux-${{ matrix.version }}
-          path: ${{ github.workspace }}/linux-${{ matrix.version }}/
+          path: ${{ github.workspace }}/linux-${{ matrix.version }}.tar.zst
