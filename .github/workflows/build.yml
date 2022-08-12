@@ -24,6 +24,7 @@ jobs:
 
       - name: start docker and build 
         run: |
+          ls -al ${{ github.workspace }} 
           chmod +x ${{ github.workspace }}/docker-entrypoint.sh 
           docker run --rm --env VERSION=${{ matrix.version }} \
             -v ${{ github.workspace }}/linux-${{ matrix.version }}/:/linux-${{ matrix.version }}/ \
