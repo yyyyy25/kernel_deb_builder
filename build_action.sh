@@ -19,7 +19,7 @@ tar -xf linux-"$VERSION".tar.xz
 cd linux-"$VERSION" || exit
 
 # copy config file
-cp ../config .config
+cp ../.config .config
 
 # disable DEBUG_INFO to speedup build
 # scripts/config --disable DEBUG_INFO
