@@ -17,7 +17,7 @@ EOF
 
 # install dep
 apt update
-apt install -y wget zstd
+apt install -y wget zstd curl
 apt build-dep -y linux
 
 # change dir to workplace
@@ -28,6 +28,13 @@ if [ "${VERSION: -2}" = ".0" ]; then
 else
     VERSION_MAJOR="${VERSION}"
 fi
+
+# get condig file from ubuntu ppa
+DEB_FILE=$(curl https://kernel.ubuntu.com/\~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/ | grep -P -o 'linux-headers-.*?-generic.*?_amd64.deb' | awk 'NR==1{print $1}')
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}
+ar x ${DEB_FILE}
+cat data.tar.zst | zstd -d | tar xf -
+
 
 # download kernel source
 wget http://www.kernel.org/pub/linux/kernel/v${VERSION: 0: 1}.x/linux-"${VERSION_MAJOR}".tar.xz -O linux-"${VERSION}".tar.xz
@@ -40,7 +47,12 @@ fi
 cd linux-"${VERSION}" || exit
 
 # copy config file
-cp "/config-${VERSION}" .config
+if [ -f "/config-${VERSION}" ]; then
+    cp "/config-${VERSION}" .config
+else
+    cat ../usr/src/linux-headers-*/.config > .config 
+fi
+
 
 # disable DEBUG_INFO to speedup build
 # scripts/config --disable DEBUG_INFO
