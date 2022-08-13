@@ -44,7 +44,7 @@ jobs:
       - name: prepare artifact
         run: |
           cd ${{ github.workspace }}
-          sudo tar -l zstd -cvf linux-${{ matrix.version }}.tar.zst linux-${{ matrix.version }}
+          sudo tar cvf - linux-${{ matrix.version }} | zstd - -o linux-${{ matrix.version }}.tar.zst 
 
       - name: Artifact
         uses: actions/upload-artifact@v3

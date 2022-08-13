@@ -59,6 +59,7 @@ fi
 
 # apply patches
 # shellcheck source=src/util.sh
+ls -al /patch.d
 source /patch.d/*.sh
 
 # build deb packages
