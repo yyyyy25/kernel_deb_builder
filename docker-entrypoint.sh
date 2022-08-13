@@ -31,6 +31,7 @@ fi
 
 # get condig file from ubuntu ppa
 DEB_FILE=$(curl https://kernel.ubuntu.com/\~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/ | grep -P -o 'linux-headers-.*?-generic.*?_amd64.deb' | awk 'NR==1{print $1}')
+echo "Fetching ${DEB_FILE} from https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}"
 wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}
 ar x ${DEB_FILE}
 cat data.tar.zst | zstd -d | tar xf -
@@ -53,13 +54,6 @@ else
     cat ../usr/src/linux-headers-*/.config > .config 
 fi
 
-
-# disable DEBUG_INFO to speedup build
-# scripts/config --disable DEBUG_INFO
-
-# DEBUG: show patches
-# ls -al /patch.d
-
 # apply patches
 # shellcheck source=src/util.sh
 for PATCH in /patch.d/*.sh; do
@@ -68,7 +62,7 @@ for PATCH in /patch.d/*.sh; do
 done
 
 # check the final config
-cat .config
+cat .config || exit
 
 # build deb packages
 CPU_CORES=$(($(grep -c processor < /proc/cpuinfo)*2))
