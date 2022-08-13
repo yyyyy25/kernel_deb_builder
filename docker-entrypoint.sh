@@ -36,7 +36,7 @@ wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DE
 ar x ${DEB_FILE}
 if [ -f "data.tar.xz" ]; then
     tar xf data.tar.xz
-else if [ -f "data.tar.zst" ]; then
+elif [ -f "data.tar.zst" ]; then
     cat data.tar.zst | zstd -d | tar xf -
 else
     echo "No data.tar.xz or data.tar.zst found"
