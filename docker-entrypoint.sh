@@ -57,10 +57,15 @@ fi
 # disable DEBUG_INFO to speedup build
 # scripts/config --disable DEBUG_INFO
 
+# DEBUG: show patches
+ls -al /patch.d
+
 # apply patches
 # shellcheck source=src/util.sh
-ls -al /patch.d
 source /patch.d/*.sh
+
+# check the final config
+cat .config
 
 # build deb packages
 CPU_CORES=$(($(grep -c processor < /proc/cpuinfo)*2))
