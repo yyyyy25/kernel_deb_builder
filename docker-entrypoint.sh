@@ -34,7 +34,14 @@ DEB_FILE=$(curl https://kernel.ubuntu.com/\~kernel-ppa/mainline/v${VERSION_MAJOR
 echo "Fetching ${DEB_FILE} from https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}"
 wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}
 ar x ${DEB_FILE}
-cat data.tar.zst | zstd -d | tar xf -
+if [ -f "data.tar.xz" ]; then
+    tar xf data.tar.xz
+else if [ -f "data.tar.zst" ]; then
+    cat data.tar.zst | zstd -d | tar xf -
+else
+    echo "No data.tar.xz or data.tar.zst found"
+    exit 1
+fi
 
 
 # download kernel source
@@ -62,7 +69,7 @@ for PATCH in /patch.d/*.sh; do
 done
 
 # check the final config
-cat .config || exit
+cat .config
 
 # build deb packages
 CPU_CORES=$(($(grep -c processor < /proc/cpuinfo)*2))
