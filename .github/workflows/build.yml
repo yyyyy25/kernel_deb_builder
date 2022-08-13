@@ -18,7 +18,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get upgrade -y
-          sudo apt install -y zstd
+          sudo apt install zstd tree -y
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -44,7 +44,13 @@ jobs:
       - name: prepare artifact
         run: |
           cd ${{ github.workspace }}
-          sudo tar cvf - linux-${{ matrix.version }} | zstd - -o linux-${{ matrix.version }}.tar.zst 
+          sudo du -h --max-depth=1
+          tree .
+          VMLINUX_PATH="$(find . -name *vmlinux)"
+          BZIMAGE_PATH="$(find . -name *bzImage)"
+          KO_PATH="$(find . -name *.ko)"
+          CONFIG_PATH="$(find . -name *.config)"
+          tar -cvf - $VMLINUX_PATH $BZIMAGE_PATH $KO_PATH $CONFIG_PATH | zstd - -o linux-${{ matrix.version }}.tar.zst 
 
       - name: Artifact
         uses: actions/upload-artifact@v3
