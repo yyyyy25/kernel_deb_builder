@@ -58,11 +58,14 @@ fi
 # scripts/config --disable DEBUG_INFO
 
 # DEBUG: show patches
-ls -al /patch.d
+# ls -al /patch.d
 
 # apply patches
 # shellcheck source=src/util.sh
-source /patch.d/*.sh
+for PATCH in /patch.d/*.sh; do
+    echo "Applying patch ${PATCH}"
+    source "${PATCH}"
+done
 
 # check the final config
 cat .config
