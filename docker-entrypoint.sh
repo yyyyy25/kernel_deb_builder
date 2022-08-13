@@ -69,7 +69,7 @@ for PATCH in /patch.d/*.sh; do
 done
 
 # check the final config
-grep -r "-Werror"
+grep -r "\-Werror"
 cat .config
 
 # build deb packages
