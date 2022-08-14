@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+#debug release version
+cat /etc/os-release
+
 # add deb-src to sources.list
-# sed -i "/deb-src/s/# //g" /etc/apt/sources.list
 cat <<EOF > /etc/apt/sources.list
 deb https://deb.debian.org/debian/ bullseye main contrib non-free
 deb-src https://deb.debian.org/debian/ bullseye main contrib non-free
