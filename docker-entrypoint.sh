@@ -38,9 +38,11 @@ fi
 # install dep
 apt update
 apt install -y wget zstd curl
-apt build-dep -y linux
-apt install build-essential libncurses-dev bison flex libssl-dev libelf-dev bc kmod cpio fakeroot -y
-
+if [ "${OS_RELEASE}" = "bullseye" ]; then
+    apt build-dep -y linux
+else
+    apt install build-essential libncurses-dev bison flex libssl-dev libelf-dev bc kmod cpio fakeroot -y
+fi
 # change dir to workplace
 cd "/linux-${VERSION}" || exit
 
