@@ -4,6 +4,7 @@
 OS_RELEASE=$(cat /etc/os-release | grep "VERSION_CODENAME" | cut -d '=' -f 2)
 
 # add deb-src to sources.list
+if [ "${OS_RELEASE}" = "bullseye" || "${OS_RELEASE}" = "testing" ]; then
 cat <<EOF > /etc/apt/sources.list
 deb https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free
 deb-src https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free
@@ -13,14 +14,32 @@ deb-src https://deb.debian.org/debian/ $OS_RELEASE-updates main contrib non-free
 deb https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free
 deb-src https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free
 
-# deb https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
-# deb-src https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
+deb https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
+deb-src https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
 EOF
+elif [ "${OS_RELEASE}" = "buster" || "${OS_RELEASE}" = "stretch" ]; then
+cat <<EOF > /etc/apt/sources.list
+deb https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free
+deb-src https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free
+deb https://deb.debian.org/debian/ $OS_RELEASE-updates main contrib non-free
+deb-src https://deb.debian.org/debian/ $OS_RELEASE-updates main contrib non-free
+
+deb https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free
+deb-src https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free
+
+deb https://deb.debian.org/debian-security $OS_RELEASE/updates main contrib non-free
+deb-src https://deb.debian.org/debian-security $OS_RELEASE/updates main contrib non-free
+EOF
+else
+echo "Unsupported OS_RELEASE: ${OS_RELEASE}"
+exit 1
+fi
 
 # install dep
 apt update
 apt install -y wget zstd curl
 apt build-dep -y linux
+apt install build-essential libncurses-dev bison flex libssl-dev libelf-dev bc kmod cpio fakeroot -y
 
 # change dir to workplace
 cd "/linux-${VERSION}" || exit
