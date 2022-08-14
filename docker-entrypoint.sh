@@ -13,8 +13,8 @@ deb-src https://deb.debian.org/debian/ $OS_RELEASE-updates main contrib non-free
 deb https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free
 deb-src https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free
 
-deb https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
-deb-src https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
+# deb https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
+# deb-src https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
 EOF
 
 # install dep
