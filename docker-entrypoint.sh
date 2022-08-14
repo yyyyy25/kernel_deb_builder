@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 
 #debug release version
-cat /etc/os-release
+OS_RELEASE=$(cat /etc/os-release | grep "VERSION_CODENAME" | cut -d '=' -f 2)
 
 # add deb-src to sources.list
 cat <<EOF > /etc/apt/sources.list
-deb https://deb.debian.org/debian/ bullseye main contrib non-free
-deb-src https://deb.debian.org/debian/ bullseye main contrib non-free
-deb https://deb.debian.org/debian/ bullseye-updates main contrib non-free
-deb-src https://deb.debian.org/debian/ bullseye-updates main contrib non-free
+deb https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free
+deb-src https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free
+deb https://deb.debian.org/debian/ $OS_RELEASE-updates main contrib non-free
+deb-src https://deb.debian.org/debian/ $OS_RELEASE-updates main contrib non-free
 
-deb https://deb.debian.org/debian/ bullseye-backports main contrib non-free
-deb-src https://deb.debian.org/debian/ bullseye-backports main contrib non-free
+deb https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free
+deb-src https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free
 
-deb https://deb.debian.org/debian-security bullseye-security main contrib non-free
-deb-src https://deb.debian.org/debian-security bullseye-security main contrib non-free
+deb https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
+deb-src https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free
 EOF
 
 # install dep
@@ -31,19 +31,19 @@ else
     VERSION_MAJOR="${VERSION}"
 fi
 
-# get condig file from ubuntu ppa
-DEB_FILE=$(curl https://kernel.ubuntu.com/\~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/ | grep -P -o 'linux-headers-.*?-generic.*?_amd64.deb' | awk 'NR==1{print $1}')
-echo "Fetching ${DEB_FILE} from https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}"
-wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}
-ar x ${DEB_FILE}
-if [ -f "data.tar.xz" ]; then
-    tar xf data.tar.xz
-elif [ -f "data.tar.zst" ]; then
-    cat data.tar.zst | zstd -d | tar xf -
-else
-    echo "No data.tar.xz or data.tar.zst found"
-    exit 1
-fi
+# # get config file from ubuntu ppa
+# DEB_FILE=$(curl https://kernel.ubuntu.com/\~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/ | grep -P -o 'linux-headers-.*?-generic.*?_amd64.deb' | awk 'NR==1{print $1}')
+# echo "Fetching ${DEB_FILE} from https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}"
+# wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}
+# ar x ${DEB_FILE}
+# if [ -f "data.tar.xz" ]; then
+#     tar xf data.tar.xz
+# elif [ -f "data.tar.zst" ]; then
+#     cat data.tar.zst | zstd -d | tar xf -
+# else
+#     echo "No data.tar.xz or data.tar.zst found"
+#     exit 1
+# fi
 
 
 # download kernel source
@@ -59,8 +59,9 @@ cd linux-"${VERSION}" || exit
 # copy config file
 if [ -f "/config-${VERSION}" ]; then
     cp "/config-${VERSION}" .config
-else
-    cat ../usr/src/linux-headers-*/.config > .config 
+elif [ -f "/build_config" ]; then
+    cp /build_config .config
+    # cat ../usr/src/linux-headers-*/.config > .config 
 fi
 
 # apply patches

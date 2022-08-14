@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ["5.10.10"]
+        version: ["5.10.10", "5.18.0", "5.19.0"]
     name: Build kernel
     runs-on: ubuntu-22.04
     steps:
@@ -31,13 +31,16 @@ jobs:
       - name: start docker and build 
         run: |
           ls -al ${{ github.workspace }} 
+          chmod +x ${{ github.workspace }}/fetch-config.sh
+          VERSION=${{ matrix.version }} source ./fetch-config.sh
           chmod +x ${{ github.workspace }}/docker-entrypoint.sh 
           docker run --rm --user root --env VERSION=${{ matrix.version }} \
             -v ${{ github.workspace }}/linux-${{ matrix.version }}/:/linux-${{ matrix.version }}/ \
             -v ${{ github.workspace }}/config-${{ matrix.version }}:/config-${{ matrix.version }} \
             -v ${{ github.workspace }}/docker-entrypoint.sh:/docker-entrypoint.sh \
             -v ${{ github.workspace }}/patch.d/:/patch.d/ \
-            gcc:bullseye "/docker-entrypoint.sh"
+            -v ${{ github.workspace }}/.config:/build_config \
+            gcc:${GCC_VERSION_MAJOR} "/docker-entrypoint.sh"
 
       - name: prepare artifact
         run: |
