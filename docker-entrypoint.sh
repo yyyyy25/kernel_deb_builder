@@ -41,7 +41,7 @@ apt install -y wget zstd curl
 if [ "${OS_RELEASE}" = "bullseye" ]; then
     apt build-dep -y linux
 else
-    apt install build-essential libncurses-dev bison flex libssl-dev libelf-dev bc kmod cpio fakeroot rsync lz4 -y
+    apt install build-essential libncurses-dev bison flex libssl-dev libelf-dev bc kmod cpio fakeroot rsync lz4 dwarves -y
 fi
 # change dir to workplace
 cd "/linux-${VERSION}" || exit
