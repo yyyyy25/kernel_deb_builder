@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ["5.19.0", "5.19.1", "5.19.2", "5.19.3", "5.19.4"]
+        version: ["5.10.102", "5.15.25", "5.16.11"]
     name: Build kernel
     runs-on: ubuntu-22.04
     steps:
