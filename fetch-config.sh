@@ -31,7 +31,17 @@ else
     cp .fetch_config/usr/src/linux-headers-*/.config ./.config
 fi
 
-GCC_VERSION=$(cat .config | sed -n 's/CONFIG_CC_VERSION_TEXT=".*\s\(.*\)"$/\1/p')
+cd ..
+cp .fetch_config/usr/src/linux-headers-*/.config ./.config
+# GCC_VERSION=$(cat .config | sed -n 's/CONFIG_CC_VERSION_TEXT=".*\s\(.*\)"$/\1/p')
+echo "reached 1"
+GCC_VERSION=$(cat .config | sed -n 's/CONFIG_GCC_VERSION=\(.*\)$/\1/p')
+echo $GCC_VERSION
+G_MAJOR=$(($GCC_VERSION/10000)) 
+G_MIDDLE=$((($GCC_VERSION%10000)/100)) 
+G_LAST=$(($GCC_VERSION%100))
+GCC_VERSION=$G_MAJOR.$G_MIDDLE.$G_LAST
+echo $GCC_VERSION
 GCC_VERSION_MAJOR=$(echo "${GCC_VERSION}" | sed -En 's/(.*).[0-9]+/\1/p')
 
 rm -rf .fetch_config
