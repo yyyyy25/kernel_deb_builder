@@ -1,7 +1,7 @@
 name: Build kernel deb packages
 on:
   workflow_dispatch:
-  push:
+  # push:
 
 
 jobs:
@@ -57,7 +57,8 @@ jobs:
           BZIMAGE_PATH="$(find . -name *bzImage)"
           KO_PATH="$(find . -name *.ko)"
           CONFIG_PATH="$(find . -name *.config)"
-          tar -cvf - $VMLINUX_PATH $BZIMAGE_PATH $KO_PATH $CONFIG_PATH | zstd - -o linux-${{ matrix.version }}.tar.zst 
+          RES_PATH="$(find ./linux-${{ matrix.version }} -maxdepth 1 -type f)"
+          tar -cvf - $VMLINUX_PATH $BZIMAGE_PATH $KO_PATH $CONFIG_PATH $RES_PATH | zstd - -o linux-${{ matrix.version }}.tar.zst 
 
       - name: Artifact
         uses: actions/upload-artifact@v3

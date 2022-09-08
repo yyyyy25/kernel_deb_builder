@@ -43,6 +43,7 @@ if [ "${OS_RELEASE}" = "bullseye" ]; then
 else
     apt install build-essential libncurses-dev bison flex libssl-dev libelf-dev bc kmod cpio fakeroot rsync lz4 dwarves -y
 fi
+
 # change dir to workplace
 cd "/linux-${VERSION}" || exit
 
