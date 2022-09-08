@@ -3,12 +3,16 @@ on:
   workflow_dispatch:
   push:
 
+
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
+        version: ["5.18.19", "5.19.0", "5.19.1"]
+        include:
+          - version: d521bc0a0f7c
+            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
     name: Build kernel
     runs-on: ubuntu-22.04
     steps:
@@ -35,6 +39,7 @@ jobs:
           VERSION=${{ matrix.version }} source ./fetch-config.sh
           chmod +x ${{ github.workspace }}/docker-entrypoint.sh 
           docker run --rm --user root --env VERSION=${{ matrix.version }} \
+            --env KERNEL_FETCH_URL=${{ matrix.kernel_fetch_url }} \
             -v ${{ github.workspace }}/linux-${{ matrix.version }}/:/linux-${{ matrix.version }}/ \
             -v ${{ github.workspace }}/config-${{ matrix.version }}:/config-${{ matrix.version }} \
             -v ${{ github.workspace }}/docker-entrypoint.sh:/docker-entrypoint.sh \

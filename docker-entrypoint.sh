@@ -37,7 +37,7 @@ fi
 
 # install dep
 apt update
-apt install -y wget zstd curl
+apt install -y wget zstd curl git
 if [ "${OS_RELEASE}" = "bullseye" ]; then
     apt build-dep -y linux
 else
@@ -52,37 +52,47 @@ else
     VERSION_MAJOR="${VERSION}"
 fi
 
-# # get config file from ubuntu ppa
-# DEB_FILE=$(curl https://kernel.ubuntu.com/\~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/ | grep -P -o 'linux-headers-.*?-generic.*?_amd64.deb' | awk 'NR==1{print $1}')
-# echo "Fetching ${DEB_FILE} from https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}"
-# wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v${VERSION_MAJOR}/amd64/${DEB_FILE}
-# ar x ${DEB_FILE}
-# if [ -f "data.tar.xz" ]; then
-#     tar xf data.tar.xz
-# elif [ -f "data.tar.zst" ]; then
-#     cat data.tar.zst | zstd -d | tar xf -
-# else
-#     echo "No data.tar.xz or data.tar.zst found"
-#     exit 1
-# fi
 
+# git version
+if [ -n $(echo "${VERSION}" | grep -E '^[0-9a-fA-F]+$') ]; then
+    if [ -z "${KERNEL_FETCH_URL}" ]; then
+        echo "KERNEL_FETCH_URL is not set"
+        exit 1
+    fi
+    git clone "${KERNEL_FETCH_URL}" "linux-${VERSION}"
+    cd "linux-${VERSION}" || exit
+    git checkout "${VERSION}"
+# tar version
+elif [ -n $(echo "${VERSION}" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$') ]; then
 
-# download kernel source
-wget http://www.kernel.org/pub/linux/kernel/v${VERSION: 0: 1}.x/linux-"${VERSION_MAJOR}".tar.xz -O linux-"${VERSION}".tar.xz
-tar -xf linux-"${VERSION}".tar.xz
+    if [ -z "${KERNEL_FETCH_URL}" ]; then
+        KERNEL_FETCH_URL="http://www.kernel.org/pub/linux/kernel/v${VERSION: 0: 1}.x/linux-${VERSION_MAJOR}.tar.xz"
+    fi
 
-if [ "${VERSION}" != "${VERSION_MAJOR}" ]; then
-    mv linux-"${VERSION_MAJOR}" linux-"${VERSION}"
+    if [ -n $(echo "${KERNEL_FETCH_URL}" | grep -E '^git') ] || [ -n $(echo "${KERNEL_FETCH_URL}" | grep -E 'git$') ]; then
+        # clone git repo
+        git clone "${KERNEL_FETCH_URL}" "linux-${VERSION}"
+        cd "linux-${VERSION}" || exit
+        git checkout "${VERSION}"
+    else
+        # download source from mirror
+        wget $KERNEL_FETCH_URL -O linux-"${VERSION}".tar.xz
+        tar -xf linux-"${VERSION}".tar.xz
+
+        if [ "${VERSION}" != "${VERSION_MAJOR}" ]; then
+            mv linux-"${VERSION_MAJOR}" linux-"${VERSION}"
+        fi
+
+        cd linux-"${VERSION}" || exit
+    fi
+
 fi
-
-cd linux-"${VERSION}" || exit
 
 # copy config file
 if [ -f "/config-${VERSION}" ]; then
     cp "/config-${VERSION}" .config
 elif [ -f "/build_config" ]; then
     cp /build_config .config
-    # cat ../usr/src/linux-headers-*/.config > .config 
 fi
 
 # apply patches
