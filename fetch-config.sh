@@ -8,8 +8,10 @@ else
 fi
 
 if [ -f config-${VERSION} ]; then
+    echo "Using local config-${VERSION}"
     cp config-${VERSION} .config
 else
+    echo "Using ppa config-${VERSION}"
     mkdir -p .fetch_config
     cd .fetch_config || exit
 
@@ -32,7 +34,6 @@ else
 fi
 
 # GCC_VERSION=$(cat .config | sed -n 's/CONFIG_CC_VERSION_TEXT=".*\s\(.*\)"$/\1/p')
-echo "reached 1"
 GCC_VERSION=$(cat .config | sed -n 's/CONFIG_GCC_VERSION=\(.*\)$/\1/p')
 echo $GCC_VERSION
 G_MAJOR=$(($GCC_VERSION/10000)) 
