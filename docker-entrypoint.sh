@@ -54,7 +54,7 @@ fi
 
 
 # git version
-if [ -n $(echo "${VERSION}" | grep -E '^[0-9a-fA-F]+$') ]; then
+if [ $(echo "${VERSION}" | grep -E '^[0-9a-fA-F]+$') ]; then
     if [ -z "${KERNEL_FETCH_URL}" ]; then
         echo "KERNEL_FETCH_URL is not set"
         exit 1
@@ -63,13 +63,13 @@ if [ -n $(echo "${VERSION}" | grep -E '^[0-9a-fA-F]+$') ]; then
     cd "linux-${VERSION}" || exit
     git checkout "${VERSION}"
 # tar version
-elif [ -n $(echo "${VERSION}" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$') ]; then
+elif [ $(echo "${VERSION}" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$') ]; then
 
     if [ -z "${KERNEL_FETCH_URL}" ]; then
         KERNEL_FETCH_URL="http://www.kernel.org/pub/linux/kernel/v${VERSION: 0: 1}.x/linux-${VERSION_MAJOR}.tar.xz"
     fi
 
-    if [ -n $(echo "${KERNEL_FETCH_URL}" | grep -E '^git') ] || [ -n $(echo "${KERNEL_FETCH_URL}" | grep -E 'git$') ]; then
+    if [ $(echo "${KERNEL_FETCH_URL}" | grep -E '^git') ] || [ $(echo "${KERNEL_FETCH_URL}" | grep -E 'git$') ]; then
         # clone git repo
         git clone "${KERNEL_FETCH_URL}" "linux-${VERSION}"
         cd "linux-${VERSION}" || exit

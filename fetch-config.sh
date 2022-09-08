@@ -7,9 +7,12 @@ else
     VERSION_MAJOR="${VERSION}"
 fi
 
-if [ -f config-${VERSION} ]; then
+
+if [ -n ${CONFIG} ]; then
+    echo "Using config from ${CONFIG}"
+    mv ${CONFIG} config-${VERSION}
+elif [ -f config-${VERSION} ]; then
     echo "Using local config-${VERSION}"
-    cp config-${VERSION} .config
 else
     echo "Using ppa config-${VERSION}"
     mkdir -p .fetch_config
@@ -30,11 +33,12 @@ else
     fi
 
     cd ..
-    cp .fetch_config/usr/src/linux-headers-*/.config ./.config
+    cp .fetch_config/usr/src/linux-headers-*/.config ./config-${VERSION}
+    rm -rf .fetch_config
 fi
 
-# GCC_VERSION=$(cat .config | sed -n 's/CONFIG_CC_VERSION_TEXT=".*\s\(.*\)"$/\1/p')
-GCC_VERSION=$(cat .config | sed -n 's/CONFIG_GCC_VERSION=\(.*\)$/\1/p')
+# GCC_VERSION=$(cat config-${VERSION} | sed -n 's/CONFIG_CC_VERSION_TEXT=".*\s\(.*\)"$/\1/p')
+GCC_VERSION=$(cat config-${VERSION} | sed -n 's/CONFIG_GCC_VERSION=\(.*\)$/\1/p')
 echo $GCC_VERSION
 G_MAJOR=$(($GCC_VERSION/10000)) 
 G_MIDDLE=$((($GCC_VERSION%10000)/100)) 
@@ -42,5 +46,3 @@ G_LAST=$(($GCC_VERSION%100))
 GCC_VERSION=$G_MAJOR.$G_MIDDLE.$G_LAST
 echo $GCC_VERSION
 GCC_VERSION_MAJOR=$(echo "${GCC_VERSION}" | sed -En 's/(.*).[0-9]+/\1/p')
-
-rm -rf .fetch_config
