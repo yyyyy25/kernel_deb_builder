@@ -62,7 +62,7 @@ if [ $(echo -n "${VERSION}" | grep -E '^[0-9a-fA-F]+$') ]; then
     git clone "${KERNEL_FETCH_URL}" "linux-${VERSION}"
     cd "linux-${VERSION}" || exit
     git checkout "${VERSION}"
-# tar version
+# number version
 elif [ $(echo -n "${VERSION}" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$') ]; then
 
     if [ -z "${KERNEL_FETCH_URL}" ]; then
@@ -71,6 +71,7 @@ elif [ $(echo -n "${VERSION}" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$') ]; then
 
     if [ $(echo -n "${KERNEL_FETCH_URL}" | grep -E '^git') ] || [ $(echo -n "${KERNEL_FETCH_URL}" | grep -E 'git$') ]; then
         # clone git repo
+        echo git clone "${KERNEL_FETCH_URL}" "linux-${VERSION}"
         git clone "${KERNEL_FETCH_URL}" "linux-${VERSION}"
         cd "linux-${VERSION}" || exit
         git checkout "${VERSION}"
