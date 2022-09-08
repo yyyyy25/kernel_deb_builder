@@ -8,7 +8,7 @@ else
 fi
 
 
-if [ -n ${CONFIG} ]; then
+if [ ${CONFIG} ]; then
     echo "Using config from ${CONFIG}"
     mv ${CONFIG} config-${VERSION}
 elif [ -f config-${VERSION} ]; then
