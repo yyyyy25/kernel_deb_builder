@@ -59,7 +59,7 @@ jobs:
           CONFIG_PATH="$(find . -name *.config)"
           RES_PATH="$(find ./linux-${{ matrix.version }} -maxdepth 1 -type f)"
           tar -cvf - $VMLINUX_PATH $BZIMAGE_PATH $KO_PATH $CONFIG_PATH $RES_PATH | zstd - -o linux-${{ matrix.version }}.tar.zst 
-          rm -rf linux-${{ matrix.version }}
+          sudo rm -rf linux-${{ matrix.version }}
 
       - name: Artifact
         uses: actions/upload-artifact@v3
