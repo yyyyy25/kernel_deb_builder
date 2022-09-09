@@ -1,7 +1,7 @@
 name: Build kernel deb packages
 on:
   workflow_dispatch:
-  # push:
+  push:
 
 
 jobs:
@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ["5.18.19", "5.19.0", "5.19.1"]
+        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
         include:
           - version: d521bc0a0f7c
             kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
@@ -59,6 +59,7 @@ jobs:
           CONFIG_PATH="$(find . -name *.config)"
           RES_PATH="$(find ./linux-${{ matrix.version }} -maxdepth 1 -type f)"
           tar -cvf - $VMLINUX_PATH $BZIMAGE_PATH $KO_PATH $CONFIG_PATH $RES_PATH | zstd - -o linux-${{ matrix.version }}.tar.zst 
+          rm -rf linux-${{ matrix.version }}
 
       - name: Artifact
         uses: actions/upload-artifact@v3
