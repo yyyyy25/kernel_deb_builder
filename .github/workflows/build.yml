@@ -21,7 +21,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get upgrade -y
-          sudo apt install zstd tree -y
+          sudo apt install zstd tree python3 -y
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -60,9 +60,8 @@ jobs:
           tar -cvf - $VMLINUX_PATH $BZIMAGE_PATH $KO_PATH $CONFIG_PATH $RES_PATH | zstd - -o linux-${{ matrix.version }}.tar.zst 
 
       - name: clear
-        uses: JesseTG/rm@v1.0.3
-        with:
-          path: ${{ github.workspace }}/linux-${{ matrix.version }}
+        run: |
+          python3 -c "import shutil; shutil.rmtree(\"${{ github.workspace }}/linux-${{ matrix.version }}\")"
 
       - name: debug
         run: |
