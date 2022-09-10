@@ -61,7 +61,7 @@ jobs:
 
       - name: clear
         run: |
-          python3 -c "import shutil; shutil.rmtree(\"${{ github.workspace }}/linux-${{ matrix.version }}\")"
+          sudo python3 -c "import shutil; shutil.rmtree(\"${{ github.workspace }}/linux-${{ matrix.version }}\")"
 
       - name: debug
         run: |
