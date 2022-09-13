@@ -75,3 +75,281 @@ jobs:
         with:
           name: linux-${{ matrix.version }}
           path: ${{ github.workspace }}/linux-${{ matrix.version }}.tar.zst
+  
+  analysis:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
+        include:
+          - version: d521bc0a0f7c
+            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+            config: config-net-next
+    name: Analysis kernel
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Update and Upgrade
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade -y
+          sudo apt install git zstd tree python3 -y
+
+      - name: Clone Binary Analysis Scripts
+        uses: actions/checkout@v3
+        with:
+          repository: Roarcannotprogramming/binary_analysis_batch
+          ref: master
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-${{ matrix.version }}
+          path: ${{ github.workspace }}
+        
+      - name: Unzip artifact
+        run: |
+          cd ${{ github.workspace }}
+          zstd -d linux-${{ matrix.version }}.tar.zst -c | tar xf -
+      
+      - Debug Files:
+        run: |
+          cd ${{ github.workspace }}
+          ls -alh
+          tree .
+          df -h
+          du -h --max-depth=1
+      
+      - name: Analysis
+        run: |
+          cd ${{ github.workspace }}
+          VMLINUX_PATH="$(find . -name *vmlinux)"
+          cp $VMLINUX_PATH ./vmlinux
+          chmod +x analysis.sh
+          docker run --rm --env BINARY="vmlinux" --name ida-docker -p 8080:8080 -v ${{ github.workspace }}:/root/host nyamisty/docker-wine-ida:7.5sp3 /root/host/analysis.sh
+
+      - name: Print Log
+        run: |
+          ls -la
+          cat ida_log
+      
+      - name: Prepare Artifact
+        run: |
+          tar -cvf - vmlinux* ida_log | zstd - -o vmlinux-${{ matrix.version }}.tar.zst
+
+      - name: Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vmlinux-${{ matrix.version }}_0
+          path: vmlinux-${{ matrix.version }}.tar.zst
+
+  analysis_continue_1:
+    needs: analysis
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
+        include:
+          - version: d521bc0a0f7c
+            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+            config: config-net-next
+    name: Analysis kernel Continue 1
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Update and Upgrade
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade -y
+          sudo apt install git zstd tree python3 -y
+
+      - name: Clone Binary Analysis Scripts
+        uses: actions/checkout@v3
+        with:
+          repository: Roarcannotprogramming/binary_analysis_batch
+          ref: master
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: vmlinux-${{ matrix.version }}_0
+          path: ${{ github.workspace }}
+        
+      - name: Unzip artifact
+        run: |
+          cd ${{ github.workspace }}
+          zstd -d vmlinux-${{ matrix.version }}.tar.zst -c | tar xf -
+      
+      - Debug Files:
+        run: |
+          cd ${{ github.workspace }}
+          ls -alh
+          tree .
+          df -h
+          du -h --max-depth=1
+
+      
+      - name: Analysis
+        run: |
+          cd ${{ github.workspace }}
+          chmod +x analysis.sh
+          if [ "$(cat ida_log | grep "The initial autoanalysis has been finished.")" ]; then
+            echo "[+] Already completed! Do Nothing"
+          else 
+            docker run --rm --env BINARY="vmlinux" --name ida-docker -p 8080:8080 -v ${{ github.workspace }}:/root/host nyamisty/docker-wine-ida:7.5sp3 /root/host/analysis.sh
+          fi
+
+      - name: Print Log
+        run: |
+          ls -la
+          cat ida_log
+      
+      - name: Prepare Artifact
+        run: |
+          tar -cvf - vmlinux* ida_log | zstd - -o vmlinux-${{ matrix.version }}.tar.zst
+
+      - name: Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vmlinux-${{ matrix.version }}_1
+          path: vmlinux-${{ matrix.version }}.tar.zst
+
+  analysis_continue_2:
+    needs: analysis_continue_1
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
+        include:
+          - version: d521bc0a0f7c
+            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+            config: config-net-next
+    name: Analysis kernel Continue 2
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Update and Upgrade
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade -y
+          sudo apt install git zstd tree python3 -y
+
+      - name: Clone Binary Analysis Scripts
+        uses: actions/checkout@v3
+        with:
+          repository: Roarcannotprogramming/binary_analysis_batch
+          ref: master
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: vmlinux-${{ matrix.version }}_1
+          path: ${{ github.workspace }}
+        
+      - name: Unzip artifact
+        run: |
+          cd ${{ github.workspace }}
+          zstd -d vmlinux-${{ matrix.version }}.tar.zst -c | tar xf -
+      
+      - Debug Files:
+        run: |
+          cd ${{ github.workspace }}
+          ls -alh
+          tree .
+          df -h
+          du -h --max-depth=1
+
+      
+      - name: Analysis
+        run: |
+          cd ${{ github.workspace }}
+          chmod +x analysis.sh
+          if [ "$(cat ida_log | grep "The initial autoanalysis has been finished.")" ]; then
+            echo "[+] Already completed! Do Nothing"
+          else 
+            docker run --rm --env BINARY="vmlinux" --name ida-docker -p 8080:8080 -v ${{ github.workspace }}:/root/host nyamisty/docker-wine-ida:7.5sp3 /root/host/analysis.sh
+          fi
+
+      - name: Print Log
+        run: |
+          ls -la
+          cat ida_log
+      
+      - name: Prepare Artifact
+        run: |
+          tar -cvf - vmlinux* ida_log | zstd - -o vmlinux-${{ matrix.version }}.tar.zst
+
+      - name: Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vmlinux-${{ matrix.version }}_2
+          path: vmlinux-${{ matrix.version }}.tar.zst
+
+  analysis_continue_3:
+    needs: analysis_continue_2
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
+        include:
+          - version: d521bc0a0f7c
+            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+            config: config-net-next
+    name: Analysis kernel Continue 3
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Update and Upgrade
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade -y
+          sudo apt install git zstd tree python3 -y
+
+      - name: Clone Binary Analysis Scripts
+        uses: actions/checkout@v3
+        with:
+          repository: Roarcannotprogramming/binary_analysis_batch
+          ref: master
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: vmlinux-${{ matrix.version }}_2
+          path: ${{ github.workspace }}
+        
+      - name: Unzip artifact
+        run: |
+          cd ${{ github.workspace }}
+          zstd -d vmlinux-${{ matrix.version }}.tar.zst -c | tar xf -
+      
+      - Debug Files:
+        run: |
+          cd ${{ github.workspace }}
+          ls -alh
+          tree .
+          df -h
+          du -h --max-depth=1
+
+      
+      - name: Analysis
+        run: |
+          cd ${{ github.workspace }}
+          chmod +x analysis.sh
+          if [ "$(cat ida_log | grep "The initial autoanalysis has been finished.")" ]; then
+            echo "[+] Already completed! Do Nothing"
+          else 
+            docker run --rm --env BINARY="vmlinux" --name ida-docker -p 8080:8080 -v ${{ github.workspace }}:/root/host nyamisty/docker-wine-ida:7.5sp3 /root/host/analysis.sh
+          fi
+
+      - name: Print Log
+        run: |
+          ls -la
+          cat ida_log
+      
+      - name: Prepare Artifact
+        run: |
+          tar -cvf - vmlinux* ida_log | zstd - -o vmlinux-${{ matrix.version }}.tar.zst
+
+      - name: Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vmlinux-${{ matrix.version }}_3
+          path: vmlinux-${{ matrix.version }}.tar.zst
+
