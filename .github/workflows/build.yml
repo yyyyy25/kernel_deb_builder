@@ -112,7 +112,7 @@ jobs:
           cd ${{ github.workspace }}
           zstd -d linux-${{ matrix.version }}.tar.zst -c | tar xf -
       
-      - Debug Files:
+      - name: Debug Files
         run: |
           cd ${{ github.workspace }}
           ls -alh
@@ -179,7 +179,7 @@ jobs:
           cd ${{ github.workspace }}
           zstd -d vmlinux-${{ matrix.version }}.tar.zst -c | tar xf -
       
-      - Debug Files:
+      - name: Debug Files
         run: |
           cd ${{ github.workspace }}
           ls -alh
@@ -249,7 +249,7 @@ jobs:
           cd ${{ github.workspace }}
           zstd -d vmlinux-${{ matrix.version }}.tar.zst -c | tar xf -
       
-      - Debug Files:
+      - name: Debug Files
         run: |
           cd ${{ github.workspace }}
           ls -alh
@@ -319,7 +319,7 @@ jobs:
           cd ${{ github.workspace }}
           zstd -d vmlinux-${{ matrix.version }}.tar.zst -c | tar xf -
       
-      - Debug Files:
+      - name: Debug Files
         run: |
           cd ${{ github.workspace }}
           ls -alh
