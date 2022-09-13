@@ -123,8 +123,9 @@ jobs:
       - name: Analysis
         run: |
           cd ${{ github.workspace }}
-          VMLINUX_PATH="$(find . -name *vmlinux)"
-          cp $VMLINUX_PATH ./vmlinux
+          # VMLINUX_PATH="$(find . -name *vmlinux)"
+          mv ./linux-${{ matrix.version }}/linux-${{ matrix.version }}/vmlinux ./vmlinux
+          sudo rm -rf ./linux-${{ matrix.version }}*
           chmod +x analysis.sh
           docker run --rm --env BINARY="vmlinux" --name ida-docker -p 8080:8080 -v ${{ github.workspace }}:/root/host nyamisty/docker-wine-ida:7.5sp3 /root/host/analysis.sh
 
