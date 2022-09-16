@@ -5,20 +5,21 @@ on:
 
 
 jobs:
+  set_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          echo "::set-output name=matrix::$(cat matrix.json | tr '\n' ' ' | sed 's/\s//g' | sed 's/\"/\\\"/g')"
+
   build:
+    needs: set_matrix
     strategy:
       fail-fast: false
-      matrix:
-        version: ["4.19.258", "5.4.213", "5.15.68", "5.18.19"]
-        # include:
-        #   - version: d521bc0a0f7c
-        #     kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-        #     config: config-net-next
-        include:
-          - version: 5.10.143
-            config: config-5.10
-          - version: 5.19.9
-            config: config-5.19
+      matrix: ${{ fromJson(needs.set_matrix.outputs.matrix) }}
     name: Build kernel
     runs-on: ubuntu-22.04
     steps:
@@ -82,15 +83,10 @@ jobs:
           path: ${{ github.workspace }}/linux-${{ matrix.version }}.tar.zst
   
   analysis:
-    needs: build
+    needs: [set_matrix, build]
     strategy:
       fail-fast: false
-      matrix:
-        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
-        include:
-          - version: d521bc0a0f7c
-            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-            config: config-net-next
+      matrix: ${{ fromJson(needs.set_matrix.outputs.matrix) }}
     name: Analysis kernel
     runs-on: ubuntu-22.04
     steps:
@@ -150,15 +146,10 @@ jobs:
           path: vmlinux-${{ matrix.version }}.tar.zst
 
   analysis_continue_1:
-    needs: analysis
+    needs: [set_matrix, analysis]
     strategy:
       fail-fast: false
-      matrix:
-        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
-        include:
-          - version: d521bc0a0f7c
-            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-            config: config-net-next
+      matrix: ${{ fromJson(needs.set_matrix.outputs.matrix) }}
     name: Analysis kernel Continue 1
     runs-on: ubuntu-22.04
     steps:
@@ -220,15 +211,10 @@ jobs:
           path: vmlinux-${{ matrix.version }}.tar.zst
 
   analysis_continue_2:
-    needs: analysis_continue_1
+    needs: [set_matrix, analysis_continue_1]
     strategy:
       fail-fast: false
-      matrix:
-        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
-        include:
-          - version: d521bc0a0f7c
-            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-            config: config-net-next
+      matrix: ${{ fromJson(needs.set_matrix.outputs.matrix) }}
     name: Analysis kernel Continue 2
     runs-on: ubuntu-22.04
     steps:
@@ -290,15 +276,10 @@ jobs:
           path: vmlinux-${{ matrix.version }}.tar.zst
 
   analysis_continue_3:
-    needs: analysis_continue_2
+    needs: [set_matrix, analysis_continue_2]
     strategy:
       fail-fast: false
-      matrix:
-        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
-        include:
-          - version: d521bc0a0f7c
-            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-            config: config-net-next
+      matrix: ${{ fromJson(needs.set_matrix.outputs.matrix) }}
     name: Analysis kernel Continue 3
     runs-on: ubuntu-22.04
     steps:
