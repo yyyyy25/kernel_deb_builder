@@ -9,11 +9,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ["4.19.256", "5.4.211", "5.10.133", "5.15.64", "5.18.19", "5.19.0", "5.19.1"]
+        version: ["4.19.258", "5.4.213", "5.15.68", "5.18.19"]
+        # include:
+        #   - version: d521bc0a0f7c
+        #     kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+        #     config: config-net-next
         include:
-          - version: d521bc0a0f7c
-            kernel_fetch_url: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-            config: config-net-next
+          - version: 5.10.143
+            config: config-5.10
+          - version: 5.19.9
+            config: config-5.19
     name: Build kernel
     runs-on: ubuntu-22.04
     steps:
