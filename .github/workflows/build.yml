@@ -13,7 +13,8 @@ jobs:
       - uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          echo "::set-output name=matrix::$(cat matrix.json | tr '\n' ' ' | sed 's/\s//g' | sed 's/\"/\\\"/g')"
+          # echo $(cat matrix.json | tr '\n' ' ' | sed 's/\s//g' | sed 's/\"/\\\"/g')
+          echo "::set-output name=matrix::$(cat matrix.json | tr '\n' ' ' | sed 's/\s//g')"
 
   build:
     needs: set_matrix
