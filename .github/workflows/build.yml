@@ -14,7 +14,8 @@ jobs:
       - id: set-matrix
         run: |
           # echo $(cat matrix.json | tr '\n' ' ' | sed 's/\s//g' | sed 's/\"/\\\"/g')
-          echo "::set-output name=matrix::$(cat matrix.json | tr '\n' ' ' | sed 's/\s//g')"
+          # echo "::set-output name=matrix::$(cat matrix.json | tr '\n' ' ' | sed 's/\s//g')"
+          echo "matrix=$(cat matrix.json | tr '\n' ' ' | sed 's/\s//g')" >> $GITHUB_OUTPUT
 
   build:
     needs: set_matrix
