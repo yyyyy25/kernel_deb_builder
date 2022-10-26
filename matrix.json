@@ -2,17 +2,6 @@
     "version": [
         "6.0.0",
         "6.0.1",
-        "6.0.2",
         "6.0.3"
-    ],
-    "include": [
-        {
-            "version": "5.10.143",
-            "config": "config-5.10"
-        },
-        {
-            "version": "5.19.9",
-            "config": "config-5.19"
-        }
     ]
 }
