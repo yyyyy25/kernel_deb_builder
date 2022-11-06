@@ -2,7 +2,7 @@
     "include": [
         {
             "version": "5.18.10",
-            "config": "config-n1ctf-praymoon"
+            "config": "config-5.18.10"
         }
     ]
 }
