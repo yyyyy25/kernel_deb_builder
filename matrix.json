@@ -1,8 +1,5 @@
 {
-    "include": [
-        {
-            "version": "5.19.12",
-            "config": "config-5.19"
-        }
+    "version": [
+        "6.1.8"
     ]
 }
