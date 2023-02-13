@@ -91,7 +91,9 @@ elif [ $(echo -n "${VERSION}" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$') ]; then
 fi
 
 # copy config file
-if [ -f "/config-${VERSION}" ]; then
+if [ -n "${USE_DEFCONFIG}"]; then
+    make defconfig
+elif [ -f "/config-${VERSION}" ]; then
     cp "/config-${VERSION}" .config
 elif [ -f "/build_config" ]; then
     cp /build_config .config

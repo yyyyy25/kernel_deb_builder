@@ -49,6 +49,7 @@ jobs:
           chmod +x ${{ github.workspace }}/docker-entrypoint.sh 
           docker run --rm --user root --env VERSION=${{ matrix.version }} \
             --env KERNEL_FETCH_URL=${{ matrix.kernel_fetch_url }} \
+            --env USE_DEFCONFIG=${{ matrix.use_defconfig }} \
             -v ${{ github.workspace }}/linux-${{ matrix.version }}/:/linux-${{ matrix.version }}/ \
             -v ${{ github.workspace }}/config-${{ matrix.version }}:/config-${{ matrix.version }} \
             -v ${{ github.workspace }}/docker-entrypoint.sh:/docker-entrypoint.sh \
