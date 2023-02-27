@@ -11,7 +11,7 @@ fi
 if [ ${USE_DEFCONFIG} ]; then
     echo "Using default config"
     GCC_VERSION_MAJOR="latest"
-    exit 0
+    return 0
 elif [ ${CONFIG} ]; then
     echo "Using config from ${CONFIG}"
     mv ${CONFIG} config-${VERSION}
