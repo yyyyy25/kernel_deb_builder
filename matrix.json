@@ -1,18 +1,17 @@
 {
     "version": [
-        "6.1.9"
     ],
     "include": [
         {
-            "version": "5.17.13",
+            "version": "6.2.1",
             "use_defconfig": true 
         },
         {
-            "version": "5.17.14",
+            "version": "6.1.13",
             "use_defconfig": true
         },
         {
-            "version": "6.1.11",
+            "version": "6.1.14",
             "use_defconfig": true
         }
     ]

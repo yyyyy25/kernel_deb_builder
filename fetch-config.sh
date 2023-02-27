@@ -8,7 +8,11 @@ else
 fi
 
 
-if [ ${CONFIG} ]; then
+if [ ${USE_DEFCONFIG} ]; then
+    echo "Using default config"
+    GCC_VERSION_MAJOR="latest"
+    exit 0
+elif [ ${CONFIG} ]; then
     echo "Using config from ${CONFIG}"
     mv ${CONFIG} config-${VERSION}
 elif [ -f config-${VERSION} ]; then

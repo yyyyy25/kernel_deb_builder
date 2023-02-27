@@ -45,7 +45,7 @@ jobs:
         run: |
           ls -al ${{ github.workspace }} 
           chmod +x ${{ github.workspace }}/fetch-config.sh
-          VERSION="${{ matrix.version }}" CONFIG="${{ matrix.config }}" source ./fetch-config.sh
+          VERSION="${{ matrix.version }}" CONFIG="${{ matrix.config }}" USE_DEFCONFIG="${{ matrix.use_defconfig }}" source ./fetch-config.sh
           chmod +x ${{ github.workspace }}/docker-entrypoint.sh 
           docker run --rm --user root --env VERSION=${{ matrix.version }} \
             --env KERNEL_FETCH_URL=${{ matrix.kernel_fetch_url }} \
