@@ -96,7 +96,7 @@ jobs:
       - name: Update and Upgrade
         run: |
           sudo apt-get update
-          sudo apt-get upgrade -y
+          # sudo apt-get upgrade -y
           sudo apt install git zstd tree python3 -y
 
       - name: Clone Binary Analysis Scripts
@@ -159,7 +159,7 @@ jobs:
       - name: Update and Upgrade
         run: |
           sudo apt-get update
-          sudo apt-get upgrade -y
+          # sudo apt-get upgrade -y
           sudo apt install git zstd tree python3 -y
 
       - name: Clone Binary Analysis Scripts
@@ -224,7 +224,7 @@ jobs:
       - name: Update and Upgrade
         run: |
           sudo apt-get update
-          sudo apt-get upgrade -y
+          # sudo apt-get upgrade -y
           sudo apt install git zstd tree python3 -y
 
       - name: Clone Binary Analysis Scripts
@@ -289,7 +289,7 @@ jobs:
       - name: Update and Upgrade
         run: |
           sudo apt-get update
-          sudo apt-get upgrade -y
+          # sudo apt-get upgrade -y
           sudo apt install git zstd tree python3 -y
 
       - name: Clone Binary Analysis Scripts
