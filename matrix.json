@@ -1,16 +1,8 @@
 {
     "include": [
         {
-            "version": "6.2.1",
+            "version": "6.2.6",
             "use_defconfig": true 
-        },
-        {
-            "version": "6.1.13",
-            "use_defconfig": true
-        },
-        {
-            "version": "6.1.14",
-            "use_defconfig": true
         }
     ]
 }
