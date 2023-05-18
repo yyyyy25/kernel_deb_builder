@@ -14,6 +14,7 @@ deb https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free n
 deb-src https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free non-free-firmware
 deb https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free non-free-firmware
 deb-src https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free non-free-firmware
+EOF
 elif [[ "${OS_RELEASE}" == "bullseye" || "${OS_RELEASE}" == "testing" ]]; then
 cat <<EOF > /etc/apt/sources.list
 deb https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free
