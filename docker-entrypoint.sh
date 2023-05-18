@@ -4,7 +4,17 @@
 OS_RELEASE=$(cat /etc/os-release | grep "VERSION_CODENAME" | cut -d '=' -f 2)
 
 # add deb-src to sources.list
-if [[ "${OS_RELEASE}" == "bullseye" || "${OS_RELEASE}" == "testing" ]]; then
+if [[ "${OS_RELEASE}" == "bookwarm" ]]; then
+cat <<EOF > /etc/apt/sources.list
+deb https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free non-free-firmware
+deb-src https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free non-free-firmware
+deb https://deb.debian.org/debian/ $OS_RELEASE-updates main contrib non-free non-free-firmware
+deb-src https://deb.debian.org/debian/ $OS_RELEASE-updates main contrib non-free non-free-firmware
+deb https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free non-free-firmware
+deb-src https://deb.debian.org/debian/ $OS_RELEASE-backports main contrib non-free non-free-firmware
+deb https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free non-free-firmware
+deb-src https://deb.debian.org/debian-security $OS_RELEASE-security main contrib non-free non-free-firmware
+elif [[ "${OS_RELEASE}" == "bullseye" || "${OS_RELEASE}" == "testing" ]]; then
 cat <<EOF > /etc/apt/sources.list
 deb https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free
 deb-src https://deb.debian.org/debian/ $OS_RELEASE main contrib non-free
