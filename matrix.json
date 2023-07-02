@@ -1,10 +1,6 @@
 {
     "include": [
         {
-            "version": "6.2.6",
-            "use_defconfig": true 
-        },
-        {
             "version": "5.11.22",
             "config": "config-5.11.22"
         }
