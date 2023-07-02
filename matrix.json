@@ -2,7 +2,7 @@
     "include": [
         {
             "version": "5.11.22",
-            "config": "config-5.11.22"
+            "config": "config"
         }
     ]
 }
