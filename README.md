@@ -26,3 +26,4 @@ Enjoy～ :grin:
 
 git add . ;git commit -m "miaoshu"  ;git push
 CONFIG_SYSTEM_TRUSTED_KEYRING=y->CONFIG_SYSTEM_TRUSTED_KEYRING=n
+s
